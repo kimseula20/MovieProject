@@ -1,0 +1,26 @@
+import java.net.ServerSocket;
+import java.net.Socket;
+
+public class Server {
+	public static void main(String[] args) {
+		ServerSocket server = null;
+		Socket sock = null;
+		
+		try {
+			server = new ServerSocket(10001);
+			System.out.println("서버가 준비되었습니다.");
+			
+			sock = server.accept();
+			
+			
+			
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		
+	}
+}
+class ServerSend extends Thread{
+	
+}
+

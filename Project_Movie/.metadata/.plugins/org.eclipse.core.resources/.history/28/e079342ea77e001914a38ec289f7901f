@@ -1,0 +1,90 @@
+import java.io.PrintWriter;
+
+public class ClientInfoClass {
+
+	private String id, name, movie_choice, center_choice, movie_time,
+	movie_day, seat_num;
+	private int totalPrice;
+	private PrintWriter pw;
+	ClientInfoClass(PrintWriter pw){
+		this.id = null;
+		this.name = null;
+		this.movie_choice =null;
+		this.center_choice =null;
+		this.movie_time = null;
+		this.movie_day =null;
+		this.seat_num =null;
+		this.totalPrice = 0;
+		this.pw = pw;
+	}
+	public PrintWriter getPrintWriter() {
+		return pw;
+	}
+	public String getId() {
+		return id;
+	}
+
+	public void setId(String id) {
+		this.id = id;
+	}
+
+	public String getName() {
+		return name;
+	}
+
+	public void setName(String name) {
+		this.name = name;
+	}
+
+	public String getMovie_choice() {
+		return movie_choice;
+	}
+
+	public void setMovie_choice(String movie_choice) {
+		this.movie_choice = movie_choice;
+	}
+
+	public String getCenter_choice() {
+		return center_choice;
+	}
+
+	public void setCenter_choice(String center_choice) {
+		this.center_choice = center_choice;
+	}
+
+	public String getMovie_time() {
+		return movie_time;
+	}
+
+	public void setMovie_time(String movie_time) {
+		this.movie_time = movie_time;
+	}
+
+	public String getMovie_day() {
+		return movie_day;
+	}
+
+	public void setMovie_day(String movie_day) {
+		this.movie_day = movie_day;
+	}
+
+	public String getSeat_num() {
+		return seat_num;
+	}
+
+	public void setSeat_num(String seat_num) {
+		this.seat_num = seat_num;
+	}
+
+	public int getTotalPrice() {
+		return totalPrice;
+	}
+
+	public void setTotalPrice(int totalPrice) {
+		this.totalPrice = totalPrice;
+	}
+	
+	
+	
+	
+}

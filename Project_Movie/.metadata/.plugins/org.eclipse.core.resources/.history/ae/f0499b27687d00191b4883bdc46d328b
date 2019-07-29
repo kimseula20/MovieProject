@@ -1,0 +1,59 @@
+import java.io.IOException;
+import java.io.OutputStream;
+import java.io.OutputStreamWriter;
+import java.io.PrintWriter;
+import java.net.ServerSocket;
+import java.net.Socket;
+import java.util.Scanner;
+
+public class Server {
+	public static void main(String[] args) {
+		ServerSocket server = null;
+		Socket sock = null;
+		
+		try {
+			server = new ServerSocket(10001);
+			System.out.println("서버가 준비되었습니다.");
+			
+			sock = server.accept();
+			
+			
+			
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		
+	}
+}
+class ServerSend extends Thread{
+	Socket sock;
+	PrintWriter pw;
+	String name;
+	OutputStream output;
+	
+	ServerSend(Socket sock){
+		this.sock = sock;
+		try {
+			output = sock.getOutputStream();
+			pw = new PrintWriter(new OutputStreamWriter(output));
+			name = "[" + sock.getInetAddress() + ":" + sock.getPort() + "]";
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
+	public void run() {
+		Scanner sc = new Scanner(System.in);
+		while(output != null) {
+			try {
+			pw.print(name + sc.nextLine());
+			}
+			catch(Exception e) {
+				e.printStackTrace();
+			}
+		}
+	}
+	
+}
+class ServerReceive extends Thread{
+	
+}

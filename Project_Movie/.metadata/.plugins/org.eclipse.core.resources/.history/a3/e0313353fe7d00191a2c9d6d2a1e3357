@@ -1,0 +1,72 @@
+package Movie;
+
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.PrintWriter;
+import java.util.HashMap;
+
+/* 로그인 시 보여지는 영화 메뉴 class */
+
+public class MovieMenu{
+	BufferedReader br;
+	PrintWriter pw;
+	HashMap<String, ClientInfo> hm;
+
+	MovieMenu(BufferedReader br, PrintWriter pw, HashMap<String, ClientInfo> hm) {
+		this.br = br;
+		this.pw = pw;
+		this.hm = hm;
+	}
+
+	public static boolean isInteger(String s) {
+		try {
+			Integer.parseInt(s);
+		}catch(NumberFormatException e) {
+			return false;
+		}catch(NullPointerException e) {
+			return false;
+		}
+		return true;
+	}
+
+	void MovieMainMenu() {
+		while(true) {
+			pw.println("------------------------------------------------------------------------");
+			pw.println("1. 상영 중인 영화 보기");
+			pw.println("2. 영화 예매하기");
+			pw.println("3. 예매확인/취소");
+			pw.println("4. 매점");
+			pw.println("------------------------------------------------------------------------");
+			pw.println("원하는 번호를 선택하세요 >>> ");
+			pw.flush();
+
+			try {
+				String user = br.readLine();
+				if (MovieServer.isInteger(user)) {
+					int userSelect = Integer.parseInt(user);
+
+					switch (userSelect) {
+					case 1:
+						
+						break;
+					case 2:
+
+						break;
+					case 3:
+
+						break;
+					case 4:
+
+						break;
+					default:
+						break;
+					}
+				}
+			} catch (IOException e) {
+				e.printStackTrace();
+				break;
+			}
+		}
+	}
+
+}

@@ -1,0 +1,42 @@
+import java.io.IOException;
+
+import java.io.IOException;
+
+import org.jsoup.Jsoup;
+import org.jsoup.nodes.Document;
+import org.jsoup.select.Elements;[출처] 크롤링 6 영화순위 가져오기|작성자 심심한 주인장
+
+
+
+
+public class movie {
+	public static void main(String[] args) {
+		public static void main(String[]args) {
+			try {
+				Document doc = Jsoup.connect("https://search.daum.net/search?nil_suggest=btn&w=tot&DA=SBC&q=%EC%98%81%ED%99%94").get();
+				 Elements ol = doc.select("ol.type_plural");
+				 Elements li = ol.select("li");
+				 
+				 for(int i = 0 ; i<li.size();i++) {
+					 String rank = li.get(i).select("span.num_rank").text();
+					 String title = li.get(i).select("div.info_tit").text();
+					 String rate = li.get(i).select("em.rate").text();
+					 String resRate = li.get(i).select("dd.cont").first().text();
+					 String openDate = li.get(i).select("dd.cont").eq(1).text();
+					 String buyer = li.get(i).select("dd.cont").eq(2).text();
+					 System.out.println(rank +":"+title);
+					 System.out.println(" 평점 : "+rate+" 예매율 : "+resRate);
+					 System.out.println("개봉 : "+openDate+"  누적 관객 : "+buyer);
+					 System.out.println("------------------------------------");
+				 }
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}
+	[출처] 크롤링 6 영화순위 가져오기|작성자 심심한 주인장
+
+
+
+	}
+}

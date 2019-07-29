@@ -1,0 +1,44 @@
+package Movie;
+
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.io.OutputStream;
+import java.io.OutputStreamWriter;
+import java.io.PrintWriter;
+import java.net.InetSocketAddress;
+import java.net.ServerSocket;
+import java.net.Socket;
+import java.util.HashMap;
+
+public class MovieServer {
+	public static void main(String[] args) {
+		
+		HashMap<String, ClientInfo> hm = new HashMap<String, ClientInfo>();
+		
+		try {
+			ServerSocket server = new ServerSocket();
+			InetSocketAddress ipep = new InetSocketAddress(10001);
+			
+			server.bind(ipep);
+			
+			while(true) {
+				System.out.println("** Movie Server를 시작합니다. User의 접속을 기다립니다. **");
+				Socket sock = server.accept();
+				System.out.println(sock.getInetAddress() + "님이 접속하셨습니다.");
+				
+				InputStream in = sock.getInputStream();
+				BufferedReader br = new BufferedReader(new InputStreamReader(in));
+				OutputStream out = sock.getOutputStream();
+				PrintWriter pw = new PrintWriter(new OutputStreamWriter(out));
+				
+				
+				
+			}
+		} catch (IOException e) {
+			e.printStackTrace();
+			System.out.println("클라이언트의 강제종료시 오류");
+		}
+	}
+}

@@ -1,0 +1,68 @@
+package Movie;
+
+import java.io.PrintWriter;
+import java.util.HashMap;
+import java.util.Scanner;
+
+
+/*로그인 및 회원가입 class*/
+
+public class Login_SignUp {
+	PrintWriter pw;
+	HashMap<String, ClientInfo> hm;
+	Scanner sc = new Scanner(System.in);
+
+	Login_SignUp(PrintWriter pw, HashMap<String, ClientInfo> hm){
+		this.pw = pw;
+		this.hm = hm;
+	}
+//////////////////////////////////////////////////* 로그인 메서드 *////////////////////////////////////////////////////
+	void loginInfo() {
+		while(true) {
+			pw.println("ID 입력 : ");
+			pw.flush();
+			String ID = sc.nextLine();
+			if(hm.get(ID).getId().equals(ID)) {
+				pw.println("PassWord 입력 : ");
+				pw.flush();
+				String PWD = sc.nextLine();
+				if(hm.get(ID).getPwd().equals(PWD)) {
+					System.out.println(ID + "님이 로그인 하셨습니다.");
+					pw.println(ID + "님 환영합니다 ^^*");
+					pw.flush();
+				}
+				else {
+					pw.println("비밀번호가 맞지 않습니다. 다시 입력해주시기 바랍니다.");
+					pw.flush();
+					System.out.println(ID + "님 로그인 실패 : 비밀번호 오류");
+				}
+			}
+			else {
+				pw.println("가입되지 않은 ID입니다. ID를 다시 확인해주시기 바랍니다.");
+				pw.flush();
+				System.out.println("ID 입력 오류 또는 비회원 로그인 시도");
+			}
+		}
+	}
+/////////////////////////////////////////////////* 회원가입 메서드 *///////////////////////////////////////////////////
+	void SignUp() {
+		while(true) {
+			ClientInfo ci = new ClientInfo();
+			pw.println("가입할 ID 입력 : ");
+			pw.flush();
+			String ID = sc.nextLine();
+			hm.put(ID, ci);
+			pw.println("비밀번호 입력 : ");
+			pw.flush();
+			String PWD = sc.nextLine();
+			hm.get(ID).setPwd(PWD);
+			pw.println("이름 입력 : ");
+			pw.flush();
+			String name = sc.nextLine();
+			hm.get(ID).setName(name);
+			System.out.println("ID : "+ID+"PWD : "+PWD+"name : "+name+"님 회원가입 완료!");
+			pw.println(name + "님 회원 가입이 완료되었습니다.");
+			pw.flush();
+		}
+	}
+}

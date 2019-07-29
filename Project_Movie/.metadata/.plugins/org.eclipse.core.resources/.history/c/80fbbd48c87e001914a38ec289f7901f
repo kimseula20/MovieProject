@@ -1,0 +1,172 @@
+
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.io.OutputStream;
+import java.io.OutputStreamWriter;
+import java.io.PrintWriter;
+import java.net.InetSocketAddress;
+import java.net.ServerSocket;
+import java.net.Socket;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.util.HashMap;
+
+public class Server {
+
+	public static void main(String[] args) {
+
+		HashMap<String, ClientInfoClass> clientMap = new HashMap<String, ClientInfoClass>();
+		try {
+			ServerSocket server = new ServerSocket();
+			InetSocketAddress ipep = new InetSocketAddress(10099);
+			server.bind(ipep);																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																			
+			while (true) {
+				System.out.println("서버를 시작 합니다.\n접속을 기다립니다.");
+				Socket sock = server.accept();
+				System.out.println(sock.getInetAddress() + "님이 접속 하였습니다.");
+				ServerJoin join = new ServerJoin(sock, clientMap);
+				Thread.sleep(100);
+				join.serverStart();
+
+			}
+
+		} catch (Exception e) {
+			e.printStackTrace();
+			System.out.println("메인 서버 예외처리 발생");
+		}
+	}
+}
+
+class ServerJoin {
+
+	private ConnectionPool cp = null;
+	Connection con = null;
+	PreparedStatement pstmt = null;
+	ResultSet rs = null;
+	// 클라이언트 정보 저장 HashMap
+	HashMap<String, ClientInfoClass> clientMap;
+	Socket sock;
+	PrintWriter pw;
+	BufferedReader br;
+	String id;
+	
+	//생성자
+	ServerJoin(Socket sock, HashMap<String, ClientInfoClass> clientMap) {
+		this.sock = sock;
+		this.clientMap = clientMap;
+		try {
+			// Server의 Input 생성
+			InputStream in = sock.getInputStream();
+			this.br = new BufferedReader(new InputStreamReader(in));
+			Thread.sleep(100);
+			// Client 개인 Output 생성
+			OutputStream out = sock.getOutputStream();
+			this.pw = new PrintWriter(new OutputStreamWriter(out));
+			
+		} catch (Exception e) {
+			e.printStackTrace();
+			System.out.println("ServerJoin 생성자 예외처리 발생");
+		}
+
+	}
+
+	// 추후 구현
+	synchronized void initSetting() {
+		String url = "jdbc:oracle:thin:@localhost:1521:xe";
+		String user = "boolsa";
+		String password = "boolsa";
+		try {
+			cp = ConnectionPool.getInstance(url, user, password, 5, 10);
+			con = cp.getConnection();
+			System.out.println(cp.getNumCons() + "  <<<< 여기 인원수");
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+
+	}
+
+	void login() throws SQLException {
+		String inputStr;
+		String id="";
+		String password="";
+		
+		try {
+			while(true) {
+			pw.println("ID를 입력하세요");
+			pw.flush();
+			id = br.readLine();
+			pw.println("비밀번호를 입력하세요");
+			pw.flush();
+			password=br.readLine();
+			String loginQuery = "SELECT cust_ID, cust_PW FROM customer_info WHERE CUST_ID='"+id+"'";
+			pstmt = con.prepareStatement(loginQuery);
+			rs = pstmt.executeQuery();
+			if(rs.next()==true) {
+				if(rs.getString(2).equals(password)) {
+					System.out.println(id+"님이 로그인 하셨습니다.");
+					pw.println(id+"님  환영 합니다 \n로그인 하셨습니다.");
+					pw.flush();
+					this.id = id;
+					
+				break;
+				}
+				else {
+					System.out.println("비밀번호가 틀렸습니다.");
+					pw.println("비밀번호가 틀렸습니다.");
+					pw.flush();
+				}
+			}
+			else {
+				System.out.println("비밀번호 또는 Id가 틀리셨습니다.");
+				pw.println("비밀번호 또는 Id가 틀리셨습니다.");
+				pw.flush();
+			}
+		}
+			
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
+	void inputClientInfo() {
+		ClientInfoClass clientInfo = new ClientInfoClass(pw);
+		clientInfo.setLogin(true);
+		clientMap.put(id,clientInfo);
+	}
+
+	// 서버 시작 메서드
+	void serverStart() {
+			initSetting();
+			try {
+			login();
+			Thread.sleep(500);
+			MovieThread movieThread = new MovieThread(br,pw,con,cp);
+			movieThread.start();
+			} catch (SQLException e) {
+		// TODO Auto-generated catch block
+		e.printStackTrace();
+		}catch(Exception e) {
+			e.printStackTrace();
+			System.out.println();
+		}
+		 finally {
+			try {
+				if (rs != null)
+					rs.close();
+				if (pstmt != null)
+					pstmt.close();
+				if (con != null)
+					cp.releaseConnection(con);
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+
+		}
+
+	}
+}

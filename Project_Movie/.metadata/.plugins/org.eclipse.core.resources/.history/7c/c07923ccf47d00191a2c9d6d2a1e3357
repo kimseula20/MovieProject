@@ -1,0 +1,40 @@
+package Movie;
+
+import java.io.PrintWriter;
+import java.util.HashMap;
+import java.util.Scanner;
+
+///////////////////////////////////////////////*로그인 class*//////////////////////////////////////////////////////
+
+public class Login_SignUp {
+	PrintWriter pw;
+	HashMap<String, ClientInfo> hm;
+	Scanner sc = new Scanner(System.in);
+
+	Login_SignUp(PrintWriter pw, HashMap<String, ClientInfo> hm){
+		this.pw = pw;
+		this.hm = hm;
+	}
+	void loginInfo() {
+		while(true) {
+			pw.println("ID 입력 : ");
+			String ID = sc.nextLine();
+			if(hm.get(ID).getId().equals(ID)) {
+				pw.println("PassWord 입력 : ");
+				String PWD = sc.nextLine();
+				if(hm.get(ID).getPwd().equals(PWD)) {
+					System.out.println(ID + "님이 로그인 하셨습니다.");
+					pw.println(ID + "님 환영합니다 ^^*");
+				}
+				else {
+					pw.println("비밀번호가 맞지 않습니다. 다시 입력해주시기 바랍니다.");
+					System.out.println(ID + "님 로그인 실패 : 비밀번호 오류");
+				}
+			}
+			else {
+				pw.println("가입되지 않은 ID입니다. ID를 다시 확인해주시기 바랍니다.");
+				System.out.println("ID 입력 오류 또는 비회원 로그인 시도");
+			}
+		}
+	}
+}

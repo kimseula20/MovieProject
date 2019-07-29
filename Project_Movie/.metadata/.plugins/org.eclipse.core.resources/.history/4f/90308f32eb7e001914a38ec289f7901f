@@ -1,0 +1,10 @@
+package Movie;
+
+public class ex {
+	public static void main(String[] args) {
+		System.out.println("-------[카드판매 영수증]-------");
+		System.out.println("상품명\t\t\t단가\t수량\t금액");
+		System.out.println("===========================");
+		System.out.println("foodname\t\tfoodprice\tfoodcount\tfoodprice*foodcount");
+	}
+}

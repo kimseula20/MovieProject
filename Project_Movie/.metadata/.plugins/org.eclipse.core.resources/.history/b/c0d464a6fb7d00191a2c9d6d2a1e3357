@@ -1,0 +1,52 @@
+package MultiWerverClient;
+
+import java.net.InetSocketAddress;
+import java.net.ServerSocket;
+import java.net.Socket;
+import java.util.HashMap;
+
+class Info{
+	
+	
+	
+	
+	
+}
+
+public class MultiServer {
+	
+	public static void main(String[] args) {
+		    HashMap<String,String> db = new HashMap<String, String>();
+		    db.put("seula", "1234");
+		    db.put("kim", "5678");
+		
+		
+		try {
+			HashMap<String, >
+			ServerSocket server = new ServerSocket();
+			InetSocketAddress ipep = new InetSocketAddress(10001);
+			server.bind(ipep);
+			
+			while(true) {
+				System.out.println("Movie 서버를 시작합니다. User의 접속을 기다립니다.");
+				Socket sock = server.accept();
+				System.out.println(sock.getInetAddress() + "님이 접속하셨습니다.");
+				
+				pw.println("ID를 입력하세요");
+				String ID = br.readLine();
+				pw.println("PassWord를 입력하세요");
+				String PWD = br.readLine();
+				
+				if(db.get(ID).equals(PWD)) {
+					pw.println("로그인 성공");
+					
+					break;
+				}
+				
+			}
+			
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
+}

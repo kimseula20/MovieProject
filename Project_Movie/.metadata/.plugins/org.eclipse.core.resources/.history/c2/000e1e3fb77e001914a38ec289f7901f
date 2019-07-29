@@ -1,0 +1,173 @@
+
+import java.io.PrintWriter;
+import java.util.ArrayList;
+
+public class ClientInfoClass {
+
+	private String cust_id,cust_name,cust_num;
+	private String movie_Code,m_center_code,sc_center_code,seat_code,screening_code;
+	private String movie_title,m_center_name,sc_center_name,seat_name,screening_time;
+	private int stage;
+	private ArrayList<Snack_item> snack_shopping;
+	private int totalPrice;
+	private PrintWriter pw;
+	private boolean login;
+	
+	// 스낵전용 클래스 스낵 코드와 이름을 담기
+	private class Snack_item{
+		
+		// 스낵코드
+		private String snack_code;
+		// 스낵 이름
+		private String snack_name;
+		// 스낵 가격
+		private String snack_price;
+		
+		public String getSnack_code() {
+			return snack_code;
+		}
+		public void setSnack_code(String snack_code) {
+			this.snack_code = snack_code;
+		}
+		public String getSnack_name() {
+			return snack_name;
+		}
+		public void setSnack_name(String snack_name) {
+			this.snack_name = snack_name;
+		}
+	
+	}
+	ClientInfoClass(PrintWriter pw){
+		this.pw = pw;
+		snack_shopping = new ArrayList<Snack_item>();
+		login = false;
+	}
+	public void allreset() {
+		this.movie_Code =null;
+		this.m_center_code=null;
+		this.sc_center_code=null;
+		this.seat_code = null;
+		this.movie_title =null;
+		this.m_center_name =null;
+		this.sc_center_name =null;
+		this.seat_name = null;
+	}
+	public String getCust_id() {
+		return cust_id;
+	}
+	public void setCust_id(String cust_id) {
+		this.cust_id = cust_id;
+	}
+	public String getCust_name() {
+		return cust_name;
+	}
+	public void setCust_name(String cust_name) {
+		this.cust_name = cust_name;
+	}
+	public String getCust_num() {
+		return cust_num;
+	}
+	public void setCust_num(String cust_num) {
+		this.cust_num = cust_num;
+	}
+	public String getMovie_Code() {
+		return movie_Code;
+	}
+	public void setMovie_Code(String movie_Code) {
+		this.movie_Code = movie_Code;
+	}
+	public String getM_center_code() {
+		return m_center_code;
+	}
+	public void setM_center_code(String m_center_code) {
+		this.m_center_code = m_center_code;
+	}
+	public String getSc_center_code() {
+		return sc_center_code;
+	}
+	public void setSc_center_code(String sc_center_code) {
+		this.sc_center_code = sc_center_code;
+	}
+	public String getMovie_title() {
+		return movie_title;
+	}
+	public void setMovie_title(String movie_title) {
+		this.movie_title = movie_title;
+	}
+	public String getM_center_name() {
+		return m_center_name;
+	}
+	public void setM_center_name(String m_center_name) {
+		this.m_center_name = m_center_name;
+	}
+	public String getSc_center_name() {
+		return sc_center_name;
+	}
+	public void setSc_center_name(String sc_center_name) {
+		this.sc_center_name = sc_center_name;
+	}
+	public String resetSnack() {
+		snack_shopping.clear();
+		return "장바구니를 비우셨습니다.";
+	}
+	// ArrayList에 자동으로 추가 되는 메소드
+	public void setSnack_item(String snack_code, String snack_name) {
+		Snack_item snack_item =new Snack_item();
+		snack_item.setSnack_code(snack_code);
+		snack_item.setSnack_name(snack_name);
+		snack_shopping.add(snack_item);
+	}
+	public ArrayList<Snack_item> getSnack_shopping() {
+		return snack_shopping;
+	}
+	public int getTotalPrice() {
+		return totalPrice;
+	}
+	public void setTotalPrice(int totalPrice) {
+		this.totalPrice = totalPrice;
+	}
+	public PrintWriter getPw() {
+		return pw;
+	}
+	public void setPw(PrintWriter pw) {
+		this.pw = pw;
+	}
+	public boolean isLogin() {
+		return login;
+	}
+	public void setLogin(boolean login) {
+		this.login = login;
+	}
+	public String getSeat_code() {
+		return seat_code;
+	}
+	public void setSeat_code(String seat_code) {
+		this.seat_code = seat_code;
+	}
+	public String getSeat_name() {
+		return seat_name;
+	}
+	public void setSeat_name(String seat_name) {
+		this.seat_name = seat_name;
+	}
+	public int getStage() {
+		return stage;
+	}
+	public void setStage(int stage) {
+		this.stage = stage;
+	}
+	public String getScreening_code() {
+		return screening_code;
+	}
+	public void setScreening_code(String screening_code) {
+		this.screening_code = screening_code;
+	}
+	public String getScreening_time() {
+		return screening_time;
+	}
+	public void setScreening_time(String screening_time) {
+		this.screening_time = screening_time;
+	}
+	
+
+}

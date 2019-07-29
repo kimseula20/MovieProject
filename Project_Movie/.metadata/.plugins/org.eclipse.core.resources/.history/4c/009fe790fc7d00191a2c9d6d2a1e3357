@@ -1,0 +1,24 @@
+package Movie;
+
+import java.io.BufferedReader;
+import java.io.PrintWriter;
+import java.util.HashMap;
+
+/* 로그인 시 보여지는 영화 메뉴 class */
+
+public class MovieMenu extends Thread{
+	BufferedReader br;
+	PrintWriter pw;
+	HashMap<String, ClientInfo> hm;
+	
+	MovieMenu(BufferedReader br, PrintWriter pw, HashMap<String, ClientInfo> hm) {
+		this.br = br;
+		this.pw = pw;
+		this.hm = hm;
+	}
+
+	public void run() {
+		
+	}
+	
+}

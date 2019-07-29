@@ -1,0 +1,18 @@
+package MultiWerverClient;
+
+import java.net.InetSocketAddress;
+import java.net.ServerSocket;
+
+public class MultiServer {
+	
+	public static void main(String[] args) {
+		try {
+			ServerSocket server = new ServerSocket();
+			InetSocketAddress ipep = new InetSocketAddress(10001);
+			server.bind(ipep);
+			
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
+}

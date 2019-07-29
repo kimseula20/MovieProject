@@ -1,0 +1,597 @@
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.PrintWriter;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.ResultSetMetaData;
+import java.sql.SQLException;
+
+
+
+public class ThreadGather {
+
+}
+
+class MovieThread extends Thread {
+	Movie_View m_view;
+	BufferedReader br;
+	PrintWriter pw;
+	private ClientInfoClass clientinfo;
+	private ConnectionPool cp = null;
+	private Connection con = null;
+	private PreparedStatement pstmt = null;
+	private ResultSet rs = null;
+	private ResultSetMetaData rsmd = null;
+
+	// 생성자
+	MovieThread(BufferedReader br, PrintWriter pw, Connection con, ConnectionPool cp) {
+		m_view = new Movie_View();
+		this.br = br;
+		this.con = con;
+		this.pw = pw;
+		this.cp = cp;
+		clientinfo = new ClientInfoClass(pw);
+	}
+
+	// 메세지 보내는 메서드
+	void sendMsg(String msg) {
+		pw.println(msg);
+		pw.flush();
+	}
+	// 서버로 들어 오는 메세지 확인 메서드
+	String recive() {
+		String str = "";
+		try {
+			str = br.readLine();
+			if (str == null) {
+				System.out.println("recive null 값 발생");
+				return "잠시만 기다려주세요";
+			}
+		} catch (IOException e) {
+			e.printStackTrace();
+			System.out.println("recive 메서드 예외처리 발생");
+			return "예외처리발생";
+		} catch (Exception e) {
+			System.out.println("recive 메서드 예외처리 발생");
+			return "예외처리발생";
+		}
+		return str;
+
+	}
+
+	// String 값을 Integer로 변환 가능 여부 확인 메소드
+	boolean isInteger(String s) {
+		try {
+			Integer.parseInt(s);
+		} catch (NumberFormatException e) {
+			return false;
+		} catch (NullPointerException e) {
+			return false;
+		}
+		return true;
+	}
+	// 쿼리문을 받아 오면 ResultSet으로 담아서 Result Set으로 반환 하는 메소드
+	ResultSet returnRS(String query) {
+		try {
+			pstmt = this.con.prepareStatement(query, ResultSet.TYPE_SCROLL_SENSITIVE, ResultSet.CONCUR_UPDATABLE);
+			rs = pstmt.executeQuery();
+		} catch (SQLException e) {
+			e.printStackTrace();
+			System.out.println("returnRS 예외처리 발생");
+		}
+		return rs;
+	}
+	//SQL 컬럼의 타입을 확인하고 컬럼에 맞는 타입으로 저장 하려는 메소드  메소드 현재 쓰지 않을 예정 구현만 함.
+	void inputType(ResultSet rs) {
+		int colsCount = 0;
+		int inttmp0;
+		String strtmp;
+		try {
+			// ResultMetaData 테이블의 정보를 알아올수있는 클래스
+			rsmd = rs.getMetaData();
+			// 실행되는 쿼리문의 컬럼 개수를 알아 온다
+			colsCount = rsmd.getColumnCount();
+			for (int i = 1; i < colsCount; i++) {
+
+				if (rsmd.getColumnTypeName(i).equals("NUMBER")) {
+					rs.next();
+					inttmp0 = rs.getInt(i);
+				} else if (rsmd.getColumnTypeName(i).equals("VARCHAR2")) {
+					rs.next();
+					strtmp = rs.getString(i);
+				} else {
+				}
+			}
+
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+
+	}
+
+
+	// 선택한 번호를 입력 하면 clientinfo에 선택한 값 코드랑 이름 저장
+	// ResultSet과 선택한 번호를 넘겨 주면 clieninfo에 저장 하는 메소드
+	// 매점쪽은구현 해야 함
+	void saveKeyValue(ResultSet rs, int num) {
+		String key, keyname;
+		String value = "";
+		int price;
+		int count = 1;
+		try {
+			rsmd = rs.getMetaData();
+			rs.absolute(num);
+
+			key = rs.getString(1);
+			value = rs.getString(2);
+			keyname = rsmd.getColumnName(1);
+			keyname = keyname.toLowerCase();
+
+			if (keyname.equals("movie_code")) {
+				clientinfo.setMovie_Code(key);
+				clientinfo.setMovie_title(value);
+			} else if (keyname.equals("m_center_code")) {
+				clientinfo.setM_center_code(key);
+				clientinfo.setM_center_name(value);
+			}
+			// 상영관 코드 저장
+			else if (keyname.equals("sc_center_code")) {
+				clientinfo.setSc_center_code(key);
+				clientinfo.setSc_center_name(value);
+			} else if (keyname.equals("m_center_code")) {
+				clientinfo.setM_center_code(key);
+				clientinfo.setM_center_name(value);
+			} else if (keyname.equals("m_center_code")) {
+				clientinfo.setM_center_code(key);
+				clientinfo.setM_center_name(value);
+			} else if (keyname.equals("seat_code")) {
+				clientinfo.setSeat_code(key);
+				clientinfo.setSeat_name(value);
+			} else if (keyname.equals("screening_code")) {
+				clientinfo.setScreening_code(key);
+				clientinfo.setScreening_time(value);
+			}
+
+			//스낵 코드 저장
+			else if (keyname.equals("snack_code")) {
+				price = rs.getInt(3);
+				clientinfo.setSnack_item(key, value, price, count);
+			}
+
+		} catch (SQLException e) {
+
+			e.printStackTrace();
+			System.out.println("saveKeyValue 예외처리 발생");
+		}
+	}
+
+	//뒤로가기 넥스트 메서드
+	// 구현 예정
+	void stage_move(int movenum) {
+		int stage = clientinfo.getStage();
+		int move =stage-movenum;
+		if(move>=0) {
+			if(move==11) {  }
+			if(move==21) { }
+			if(move==22) {}
+			if(move==31) {}
+			if(move==32) {}
+			if(move==33) {}
+			if(move==34) {}
+			if(move==35) {}
+			if(move==36) {}
+			if(move==37) {}
+
+		}
+		else {
+			pw.println("현재 위치에서 이동하실수 없습니다.");
+			System.out.println("움직일 수 없다.");
+		}
+	}
+
+
+	// 현재 상영 중 영화를 보여 주는 메소드
+	void movieshow() {
+		int indexNum = 0;
+		String query = "SELECT movie_title,movie_info FROM movie_kind ";
+		rs = returnRS(query);
+		try {
+			while (rs.next()) {
+				indexNum++;
+				sendMsg(indexNum + "      : " + rs.getString(1));
+				sendMsg("       : " + rs.getString(2));
+			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+	}
+
+	/////////////////  수 지 로그인  공간////////////////////////////////////
+	///// 로그인 메소드 구현 하는 곳 /////////////////////////////////
+
+	void login() {
+
+
+
+	}
+
+	/// 회원 가입 메소드 ////////////////
+	//// 회원가입을 해서 INSERT INTO customer 과 ISNERT INTO customer_info에 저장 걸 만들면 된다용    //////
+	/// SQL로 연습한걸 그대로 붙여 놓으면 되는것..........
+	void signUp() {
+
+	}
+
+
+	// 영화를 선택 하는 메소드
+	void movieChoice() {
+		boolean loop = true;
+		// 영화 목록 뷰
+		movieshow();
+		// 영화를 선택했는지 유무
+		if (clientinfo.getMovie_Code() != null) {
+			pw.println("******************************************\n");
+			pw.println("현재 선택 하신 영화는 : " + clientinfo.getMovie_title() + "입니다.");
+			pw.println("\n******************************************");
+			pw.flush();
+		}
+		String query = "SELECT movie_code,movie_title FROM movie_kind ";
+		while (loop) {
+			sendMsg("영화를 선택해 주세요");
+			String select = recive();
+			if (isInteger(select)) {
+				int num = Integer.parseInt(select);
+				rs = returnRS(query);
+				saveKeyValue(rs, num);
+				loop = false;
+
+			} else {
+				sendMsg(" 잘못 입력 하셨습니다. 다시 입력해 주세요");
+			}
+
+		}
+		System.out.println("영화 선택 완료 ---------------- 출력 ");
+		System.out.println(clientinfo.getMovie_Code() + "movie_code\n" + clientinfo.getMovie_title() + " movie 이름");
+		if (clientinfo.getMovie_Code() != null) {
+			movie_centerChoice();
+		}
+	}
+
+	//////////// 영화관 지점 선택  //////////////////////////////////////////
+	void movie_centerChoice() {
+		int count = 0; String tmp,query,already ="";
+		query = "SELECT m_center_code, m_center_name,m_center_addr FROM movie_center ";
+		rs = returnRS(query);
+		sendMsg("-----------영화관 선택-----------");
+		if(clientinfo.getM_center_code()==null) {
+			try {
+				while (rs.next()) {
+					count++;
+					sendMsg(count + " : " + rs.getString(2) + "\t 위치" + rs.getString(3));
+				}
+				sendMsg("\n상영 하실 영화관을 선택해 주세요\n");
+				tmp = recive();
+				if (isInteger(tmp)) {
+					int num = Integer.parseInt(tmp);
+					saveKeyValue(rs, num);
+				} else
+					sendMsg("잘못 입력 하셨습니다.");
+
+			} catch (SQLException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}
+		else {
+			already = "이미";
+		}
+		sendMsg(already+" 영화관 : "+clientinfo.getM_center_name()+" 지점을 선택 하셨습니다.");
+		daytimeselect();
+		System.out.println(clientinfo.getMovie_Code()+" clientinfo.getMovie_Code()"+
+				clientinfo.getM_center_code()+" clientinfo.getM_center_code()");
+	}
+
+	////////// 날짜와 시간을 선택 하는 메소드 ///////////////////////////////////
+	void daytimeselect() {
+		int indexnum =0;
+		boolean loop =true;
+		pw.println("\n\n상영가능한 영화 날짜 시간\n\n");
+		pw.flush();
+		String query,movie_code,m_center_code;
+		movie_code = clientinfo.getMovie_Code();
+		m_center_code = clientinfo.getM_center_code();
+		query ="SELECT screening_code, TO_CHAR(screening_time,'MM/DD:HH:MI') 날짜 FROM screening JOIN screen_center USING(sc_center_code) "
+				+ "WHERE m_center_code='"+m_center_code+"'"
+				+ " AND movie_code='"+movie_code+"' ORDER By 날짜 ASC ";
+		rs = returnRS(query);
+		sendMsg(" 이 메세지는 마지막확인 메세지");
+		try {
+			if(rs.last()) {
+
+				while(rs.next()) {
+					indexnum++;
+					String tmp = rs.getString(2);		
+					sendMsg(indexnum +" ) "+tmp.substring(0,2)+"월"+tmp.substring(3,5)+
+							"일 "+tmp.substring(6,8)+"시"+tmp.substring(9,tmp.length())+"분\n");
+				}
+				while(loop) {
+					sendMsg("원하시는 날짜를 선택해 주세요 ");
+					String tmp = recive();
+					if(isInteger(tmp)) {
+						int num = Integer.parseInt(tmp);
+						saveKeyValue(rs, num);
+						loop = false;
+					}
+					else
+						sendMsg("잘 못 입력하셨습니다. 다시 입력해 주세요..");
+				}
+
+			}
+			else
+				sendMsg("상영 가능한 시간이 없습니다.");
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+
+
+	}
+
+
+	// 매점 이용 메소드 
+	//////////         슬                 아             담            당            ////////////////////////싫어싫어싫어시러시러시러싫다구!!!!!!!!!
+	void popcornShow() {
+		int indexNum = 0;
+		String query = "SELECT snack_code, snack_name, snack_price FROM snack_menu WHERE snack_code LIKE 'SP%' ";
+		rs = returnRS(query);
+		try {
+			while (rs.next()) {
+				indexNum++;
+				sendMsg(indexNum + "      : " + rs.getString(2));
+				sendMsg("가격"+"       : " + rs.getString(3));
+			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+	}
+	void drinkShow() {
+		int indexNum = 0;
+		String query = "SELECT snack_code, snack_name, snack_price FROM snack_menu WHERE snack_code LIKE 'SD%' ";
+		rs = returnRS(query);
+		try {
+			while (rs.next()) {
+				indexNum++;
+				sendMsg(indexNum + "      : " + rs.getString(2));
+				sendMsg("가격"+"       : " + rs.getString(3));
+			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+	}
+	void icecreamShow() {
+		int indexNum = 0;
+		String query = "SELECT snack_code, snack_name, snack_price FROM snack_menu WHERE snack_code LIKE 'SI%' ";
+		rs = returnRS(query);
+		try {
+			while (rs.next()) {
+				indexNum++;
+				sendMsg(indexNum + "      : " + rs.getString(2));
+				sendMsg("가격"+"       : " + rs.getString(3));
+			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+	}
+	void snackShow() {
+		int indexNum = 0;
+		String query = "SELECT snack_code, snack_name, snack_price FROM snack_menu WHERE snack_code LIKE 'SN%' ";
+		rs = returnRS(query);
+		try {
+			while (rs.next()) {
+				indexNum++;
+				sendMsg(indexNum + "      : " + rs.getString(2));
+				sendMsg("가격"+"       : " + rs.getString(3));
+			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+	}
+	void snack_shopping() {
+		boolean loop = true;
+		int cnt = 0;
+		while (loop) {
+			String select = "";
+			String cntSelect = "";
+			String query = "";
+			boolean isSelect = false;
+			boolean isCount = false;
+
+			if(cnt == 0) {
+				// 팝콘 메뉴 보여주기
+				popcornShow();
+				query = "SELECT snack_code, snack_name, snack_price FROM snack_menu WHERE snack_code LIKE 'SP%' ";
+				sendMsg("팝콘을 선택해주세요. 선택하지 않으시려면 n을 입력하세요.");
+				select = recive();
+				if(select.equals("n")) {
+					cnt++;
+				}
+				else {
+					isSelect = true;
+					isCount = true;
+				}
+			}
+			if(cnt == 1) {
+				// 음료 메뉴 보여주기
+				drinkShow();
+				query = "SELECT snack_code, snack_name, snack_price FROM snack_menu WHERE snack_code LIKE 'SD%' ";
+				sendMsg("음료를 선택해주세요. 선택하지 않으시려면 n을 입력하세요.");
+				select = recive();
+				if(select.equals("n")) {
+					cnt++;
+				}
+				else {
+					isSelect = true;
+					isCount = true;
+				}
+			}
+			if(cnt == 2) {
+				// 아이스크림 메뉴 보여주기
+				icecreamShow();
+				query = "SELECT snack_code, snack_name, snack_price FROM snack_menu WHERE snack_code LIKE 'SI%' ";
+				sendMsg("아이스크림을 선택해주세요. 선택하지 않으시려면 n을 입력하세요.");
+				select = recive();
+				if(select.equals("n")) {
+					cnt++;
+				}
+				else {
+					isSelect = true;
+					isCount = true;
+				}
+			}
+			if(cnt == 3) {
+				// 나머지 스낵 메뉴 보여주기
+				snackShow();
+				query = "SELECT snack_code, snack_name, snack_price FROM snack_menu WHERE snack_code LIKE 'SN%' ";
+				sendMsg("스낵을 선택해주세요. 선택하지 않으시려면 n을 입력하세요.");
+				select = recive();
+				if(select.equals("n")) {
+					cnt++;
+				}
+				else {
+					isSelect = true;
+					isCount = true;
+				}
+				loop = false;
+			}
+			if(isCount) {
+				sendMsg("수량을 선택해주세요.");
+				cntSelect = recive();
+				if(isInteger(cntSelect)) {
+					int num = Integer.parseInt(cntSelect);
+					rs = returnRS(query);
+					saveKeyValue(rs, num);
+				}
+			}
+			if(isSelect) {
+				if (isInteger(select)) {
+					int num = Integer.parseInt(select);
+					rs = returnRS(query);
+					saveKeyValue(rs, num);
+				}
+				cnt++;
+				isSelect = false;
+			}
+		}
+		sendMsg("******************************************\n");
+		sendMsg("최종 선택하신 스낵 종류입니다");
+		int totalPrice = 0;
+		for (int i = 0; i < clientinfo.getSnack_shopping().size(); i++) {
+			if (clientinfo.getSnack_shopping().size() > 0) {
+				String foodcode = clientinfo.getSnack_shopping().get(i).getSnack_code();
+				String foodname = clientinfo.getSnack_shopping().get(i).getSnack_name();
+				int foodprice = clientinfo.getSnack_shopping().get(i).getSnack_price();
+				if(foodcode.substring(0, 2).equals("SP")) {
+					sendMsg("팝콘 : " + foodname);
+					sendMsg("가격 : " + foodprice);
+					totalPrice += foodprice;
+				}
+				if(foodcode.substring(0, 2).equals("SD")) {
+					sendMsg("음료 : " + foodname);
+					sendMsg("가격 : " + foodprice);
+					totalPrice += foodprice;
+				}
+				if(foodcode.substring(0, 2).equals("SI")) {
+					sendMsg("아이스크림 : " + foodname);
+					sendMsg("가격 : " + foodprice);
+					totalPrice += foodprice;
+				}
+				if(foodcode.substring(0, 2).equals("SN")) {
+					sendMsg("스낵 : " + foodname);
+					sendMsg("가격 : " + foodprice);
+					totalPrice += foodprice;
+				}
+			}
+		}
+		sendMsg("결제할 총 금액 : " + totalPrice);
+		clientinfo.setSnackPrice(totalPrice);
+		System.out.println("매점 선택 완료---------------");
+		sendMsg("\n******************************************");
+		sendMsg("위의 내용이 맞으면 y 다시 고르시려면  n을 입력하세요.");
+		try {
+			String select = br.readLine();
+			if(select.equals("y")) {
+				calc_snack();
+			}
+			else if(select.equals("n")) {
+				snack_shopping();
+			}
+			else {
+				sendMsg("잘못 입력하셨습니다. 다시 입력해주세요.");
+			}
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+	}
+		// 장바구니에 담은걸 계산 하는 메소드
+		// 장바구니에 담겨 있는 
+		void calc_snack() {
+			
+		}
+
+
+		////// 쓰레드의 메인 메소드  ///////////////////////////////
+		/////        현재 5번은 clientinfo에 내가 선택한 값들을 리셋 하는 메소드임.///////
+		public void run() {
+			String msg = "";
+			int choice = 0;
+			while (true) {
+				pw.println(m_view._2_1_FirstView());
+				pw.flush();
+				try {
+					msg = recive();
+					choice = Integer.parseInt(msg);
+					switch (choice) {
+					case 1:
+						movieshow();
+						//					selectTest();
+						break;
+					case 2:
+						// 영화 예매
+						movieChoice();
+						break;
+					case 3:
+						// 정보 조회
+						break;
+					case 4:
+						snack_shopping();
+						break;
+					case 5:
+						clientinfo.allreset();
+						sendMsg("리셋 완료");
+						break;
+
+					}
+
+				} catch (Exception e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+					System.out.println("Recive 예외처리 발생");
+					break;
+				} finally {
+					try {
+						if (rs != null)
+							rs.close();
+						if (pstmt != null)
+							pstmt.close();
+						if (con != null)
+							cp.releaseConnection(con);
+					} catch (Exception e) {
+						e.printStackTrace();
+					}
+				}
+
+			}
+
+		}
+	}

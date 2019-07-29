@@ -1,0 +1,7 @@
+package Movie;
+
+/*회원가입 class*/
+
+public class SignUp {
+
+}

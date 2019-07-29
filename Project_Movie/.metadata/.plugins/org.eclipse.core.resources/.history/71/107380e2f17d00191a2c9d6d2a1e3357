@@ -1,0 +1,14 @@
+package Movie;
+
+import java.io.PrintWriter;
+import java.util.HashMap;
+
+public class Login {
+	PrintWriter pw;
+	HashMap<String, ClientInfo> hm;
+	
+	Login(PrintWriter pw, HashMap<String, ClientInfo> hm){
+		this.pw = pw;
+		this.hm = hm;
+	}
+}

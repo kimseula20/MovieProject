@@ -1,0 +1,69 @@
+package Movie;
+
+public class ClientInfo {
+	private String id;				//아이디
+	private String pwd;				//비밀번호
+	private String movie_code;		//영화 코드
+	private String m_center_code;	//지점 코드
+	private String sc_center_code;	//상영관코드
+	private String screening_time;	//영화시작시간
+	private String seat_num;		//좌석 코드
+	private String reser_code;		//예매 코드
+	private String snack_code;		//스낵 코드
+	
+	public String getId() {
+		return id;
+	}
+	public void setId(String id) {
+		this.id = id;
+	}
+	public String getPwd() {
+		return pwd;
+	}
+	public void setPwd(String pwd) {
+		this.pwd = pwd;
+	}
+	public String getMovie_code() {
+		return movie_code;
+	}
+	public void setMovie_code(String movie_code) {
+		this.movie_code = movie_code;
+	}
+	public String getM_center_code() {
+		return m_center_code;
+	}
+	public void setM_center_code(String m_center_code) {
+		this.m_center_code = m_center_code;
+	}
+	public String getSc_center_code() {
+		return sc_center_code;
+	}
+	public void setSc_center_code(String sc_center_code) {
+		this.sc_center_code = sc_center_code;
+	}
+	public String getScreening_time() {
+		return screening_time;
+	}
+	public void setScreening_time(String screening_time) {
+		this.screening_time = screening_time;
+	}
+	public String getSeat_num() {
+		return seat_num;
+	}
+	public void setSeat_num(String seat_num) {
+		this.seat_num = seat_num;
+	}
+	public String getReser_code() {
+		return reser_code;
+	}
+	public void setReser_code(String reser_code) {
+		this.reser_code = reser_code;
+	}
+	public String getSnack_code() {
+		return snack_code;
+	}
+	public void setSnack_code(String snack_code) {
+		this.snack_code = snack_code;
+	}
+	
+}

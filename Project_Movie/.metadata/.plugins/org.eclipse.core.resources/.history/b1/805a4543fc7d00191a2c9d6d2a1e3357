@@ -1,0 +1,7 @@
+package Movie;
+
+/* 로그인 시 보여지는 영화 메뉴 class */
+
+public class MovieMenu {
+
+}
